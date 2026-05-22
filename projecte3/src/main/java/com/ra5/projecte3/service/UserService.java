@@ -44,13 +44,15 @@ public class UserService {
     }
 
     public UserResponseDTO create(UserRequestDTO userRequestDTO) {
-        if (userRepository.findByEmail(userRequestDTO.getEmail()).isEmpty()) {
+        if (userRepository.findByEmail(userRequestDTO.getEmail()).isPresent()) {
             return null;
         }
 
         User user = userMapper.toEntity(userRequestDTO);
 
         userRepository.save(user);
+
+        System.out.println(userRequestDTO + ", " + user + ", " + userMapper.toDto(user));
 
         return userMapper.toDto(user);
     }
@@ -70,9 +72,11 @@ public class UserService {
         user.setLastName(userRequestDTO.getLastName() != null ? userRequestDTO.getLastName() : user.getLastName());
         user.setRole(userRequestDTO.getRole() != null ? userRequestDTO.getRole() : user.getRole());
 
-        user.getAcademicProfile().setGrade(userRequestDTO.getGrade() != null ? userRequestDTO.getGrade() : user.getAcademicProfile().getGrade());
-        user.getAcademicProfile().setObservations(userRequestDTO.getObservations() != null ? userRequestDTO.getObservations() : user.getAcademicProfile().getObservations());
-
+        if (user.getAcademicProfile() != null) {
+            user.getAcademicProfile().setGrade(userRequestDTO.getGrade() != null ? userRequestDTO.getGrade() : user.getAcademicProfile().getGrade());
+            user.getAcademicProfile().setObservations(userRequestDTO.getObservations() != null ? userRequestDTO.getObservations() : user.getAcademicProfile().getObservations());
+        }
+        
         userRepository.save(user);
 
         return userMapper.toDto(user);

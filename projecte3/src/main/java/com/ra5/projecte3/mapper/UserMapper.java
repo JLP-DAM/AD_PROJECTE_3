@@ -55,10 +55,11 @@ public class UserMapper {
         user.setEmail(userRequestDTO.getEmail());
         user.setDataCreated(LocalDateTime.now());
 
-        if (userRequestDTO.getGrade() == null) {
+        if (userRequestDTO.getGrade() != null) {
             AcademicProfile academicProfile = new AcademicProfile();
             academicProfile.setGrade(userRequestDTO.getGrade());
             academicProfile.setObservations(userRequestDTO.getObservations());
+            user.setAcademicProfile(academicProfile);
         }
 
         return user;
